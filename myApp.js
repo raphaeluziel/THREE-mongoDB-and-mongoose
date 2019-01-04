@@ -95,9 +95,15 @@ var Person = mongoose.model('Person', person);
 // });
 
 var createAndSavePerson = function(done) {
-  
-  done(null /*, data*/);
-
+  var x = new Person ({
+      name: 'Raphael Uziel',
+      age: 51,
+      favoriteFoods: ['pizza', 'steak', 'fries']
+  })
+  x.save(function(err, data){
+    if(err) return done(err);
+    done(null, data);
+  });
 };
 
 /** 4) Create many People with `Model.create()` */
@@ -110,9 +116,9 @@ var createAndSavePerson = function(done) {
 // 'arrayOfPeople'.
 
 var createManyPeople = function(arrayOfPeople, done) {
-    
-    done(null/*, data*/);
-    
+  var x = Person.create(arrayOfPeople, function(err, data){
+    err ? done(err) : done(null, data);
+  });
 };
 
 /** # C[R]UD part II - READ #
@@ -127,9 +133,9 @@ var createManyPeople = function(arrayOfPeople, done) {
 // Use the function argument `personName` as search key.
 
 var findPeopleByName = function(personName, done) {
-  
-  done(null/*, data*/);
-
+  Person.find({name: personName}, function(err, data){
+    err ? done(err) : done(null, data);
+  });
 };
 
 /** 6) Use `Model.findOne()` */
@@ -142,10 +148,11 @@ var findPeopleByName = function(personName, done) {
 // argument `food` as search key
 
 var findOneByFood = function(food, done) {
-
-  done(null/*, data*/);
-  
+  Person.findOne({favoriteFoods: food}, function(err, data){
+    err ? done(err) : done(null, data);
+  });
 };
+
 
 /** 7) Use `Model.findById()` */
 
@@ -157,9 +164,9 @@ var findOneByFood = function(food, done) {
 // Use the function argument 'personId' as search key.
 
 var findPersonById = function(personId, done) {
-  
-  done(null/*, data*/);
-  
+  Person.findById({_id: personId}, function(err, data){
+    err ? done(err) : done(null, data);
+  });
 };
 
 /** # CR[U]D part III - UPDATE # 
@@ -189,8 +196,12 @@ var findPersonById = function(personId, done) {
 
 var findEditThenSave = function(personId, done) {
   var foodToAdd = 'hamburger';
-  
-  done(null/*, data*/);
+  Person.findById({_id: personId}, function(err, data){
+    data.favoriteFoods.push(foodToAdd);
+    data.save(function(err, data){
+      err ? done(err) : done(null, data);
+    });
+  });
 };
 
 /** 9) New Update : Use `findOneAndUpdate()` */
